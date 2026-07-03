@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost/OutFitKita3/backend/api/index.php',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost/OutFitKita3/backend/api/index.php',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
