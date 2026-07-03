@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/OutFitKita3/backend/api/index.php';
+const API_URL = 'http://localhost/ecommerce/backend/api/index.php';
 
 // Register User
 export const registerUser = async (userData) => {

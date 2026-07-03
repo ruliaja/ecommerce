@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/OutFitKita3/backend/api/index.php';
+const API_URL = 'http://localhost/ecommerce/backend/api/index.php';
 
 // Normalize product data from API to match frontend format
 const normalizeProduct = (product) => {
