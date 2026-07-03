@@ -46,11 +46,11 @@ const Home = () => {
         const sortedProducts = [...response.data].sort((a, b) => (b.sales || 0) - (a.sales || 0));
         setFeaturedProducts(sortedProducts.slice(0, 4));
       } else {
-        setFeaturedProducts(fallbackProducts);
+        setFeaturedProducts([]);
       }
     } catch (error) {
       console.error('Error fetching products:', error);
-      setFeaturedProducts(fallbackProducts);
+      setFeaturedProducts([]);
     } finally {
       setLoading(false);
     }
