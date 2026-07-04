@@ -9,7 +9,7 @@ export const getUserProfile = async (userId) => {
     
     if (response.data?.data?.profile_image) {
       response.data.data.profile_image = response.data.data.profile_image.replace( 
-        'http://203.194.113.131/backend'
+        'http://203.194.113.131/api/'
       );
     }
     
