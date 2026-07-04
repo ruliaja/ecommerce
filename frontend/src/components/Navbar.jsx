@@ -268,7 +268,7 @@ const Navbar = () => {
                 <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center border border-gray-300">
                   {user?.profile_image ? (
                     <img
-                      src={user.profile_image}
+                      src={user.profile_image.replace('http://203.194.113.131/uploads/', 'http://203.194.113.131/api/')}
                       alt={user?.name}
                       className="w-full h-full object-cover"
                     />
