@@ -4,13 +4,19 @@ const API_URL = 'http://203.194.113.131/api';
 
 // Normalize product data from API to match frontend format
 const normalizeProduct = (product) => {
+  let imageUrl = product.image_url;
+  // Perbaiki URL gambar yang masih hardcoded ke localhost dari database lama
+  if (imageUrl) {
+    imageUrl = imageUrl.replace('http://203.194.113.131/backend');
+  }
+
   return {
     id: product.id,
     name: product.name,
     description: product.description,
     price: product.price,
     original_price: product.original_price,
-    image_url: product.image_url,
+    image_url: imageUrl,
     images: product.images,
     category: product.category_name || product.category,
     category_id: product.category_id,
