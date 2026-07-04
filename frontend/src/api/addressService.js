@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/ecommerce/backend/api/index.php';
+const API_URL = '/api';
 
 /**
  * Get default address for a user
