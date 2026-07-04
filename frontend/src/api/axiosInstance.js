@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: "http://203.194.113.131/backend/api/index.php",
+    baseURL: "http://203.194.113.131/api/",
 });
 
 // Add request interceptor untuk attach token ke setiap request
