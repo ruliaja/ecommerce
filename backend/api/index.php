@@ -230,8 +230,8 @@ switch ($action) {
             $destination = $uploadsDir . '/' . $filename;
             if (move_uploaded_file($file['tmp_name'], $destination)) {
                 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https' : 'http';
-                $scriptPath = $_SERVER['SCRIPT_NAME']; // e.g. /OutFitKita3/backend/api/index.php
-                $basePath = preg_replace('#/api/index\.php$#', '', $scriptPath); // /OutFitKita3/backend
+                $scriptPath = $_SERVER['SCRIPT_NAME']; 
+                $basePath = preg_replace('#/api/index\.php$#', '', $scriptPath); 
                 $uploadUrl = $protocol . '://' . $_SERVER['HTTP_HOST'] . $basePath . '/uploads/' . $filename;
                 echo json_encode(["status" => "success", "image_url" => $uploadUrl]);
             } else {

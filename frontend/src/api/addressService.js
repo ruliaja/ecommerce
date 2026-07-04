@@ -54,7 +54,7 @@ export const createAddress = async (addressData) => {
  */
 export const updateAddress = async (addressData) => {
   try {
-    const response = await axios.put(`${API_URL}?action=update_address`, addressData);
+    const response = await axios.post(`${API_URL}?action=update_address`, addressData);
     return response.data;
   } catch (error) {
     console.error('Error updating address:', error);
@@ -70,8 +70,8 @@ export const updateAddress = async (addressData) => {
  */
 export const deleteAddress = async (addressId, userId) => {
   try {
-    const response = await axios.delete(`${API_URL}?action=delete_address`, {
-      data: { address_id: addressId, user_id: userId }
+    const response = await axios.post(`${API_URL}?action=delete_address`, {
+      address_id: addressId, user_id: userId 
     });
     return response.data;
   } catch (error) {
@@ -88,7 +88,7 @@ export const deleteAddress = async (addressId, userId) => {
  */
 export const setDefaultAddress = async (addressId, userId) => {
   try {
-    const response = await axios.put(`${API_URL}?action=set_default_address`, {
+    const response = await axios.post(`${API_URL}?action=set_default_address`, {
       address_id: addressId,
       user_id: userId
     });

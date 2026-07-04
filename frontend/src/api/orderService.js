@@ -46,7 +46,7 @@ export const getOrderDetail = async (orderId) => {
 
 export const updateOrderStatus = async (orderId, status, rejectionReason = null) => {
   try {
-    const response = await axiosInstance.put(
+    const response = await axiosInstance.post(
       '?action=update_order_status',
       { order_id: orderId, status, rejection_reason: rejectionReason }
     );

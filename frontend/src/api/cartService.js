@@ -73,7 +73,7 @@ export const cartService = {
   // Update cart item quantity
   updateCartItem: async (cartId, quantity) => {
     try {
-      const response = await axiosInstance.put('?action=update_cart_item', {
+      const response = await axiosInstance.post('?action=update_cart_item', {
         cart_id: cartId,
         quantity,
       });
@@ -87,8 +87,8 @@ export const cartService = {
   // Remove item from cart
   removeFromCart: async (cartId) => {
     try {
-      const response = await axiosInstance.delete('?action=remove_from_cart', {
-        data: { cart_id: cartId },
+      const response = await axiosInstance.post('?action=remove_from_cart', {
+        cart_id: cartId 
       });
       return response.data;
     } catch (error) {
@@ -100,8 +100,8 @@ export const cartService = {
   // Clear all cart items
   clearCart: async (userId = null) => {
     try {
-      const response = await axiosInstance.delete('?action=clear_cart', {
-        data: { user_id: userId },
+      const response = await axiosInstance.post('?action=clear_cart', {
+        user_id: userId 
       });
       return response.data;
     } catch (error) {
