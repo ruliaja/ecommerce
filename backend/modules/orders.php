@@ -686,6 +686,8 @@ function createOrder($db, $data) {
         $values = [];
         $types = '';
 
+        $data['shipping_address'] = $data['shipping_address'] ?? $data['customer_address'] ?? '';
+
         $fieldMap = [
             'order_number' => 's',
             'user_id' => 'i',
@@ -693,6 +695,7 @@ function createOrder($db, $data) {
             'customer_email' => 's',
             'customer_phone' => 's',
             'customer_address' => 's',
+            'shipping_address' => 's',
             'customer_city' => 's',
             'customer_zip' => 's',
             'shipping_method' => 's',
