@@ -9,7 +9,7 @@ import {
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-const API_URL = 'http://localhost/OutFitKita3/backend/api/index.php';
+const API_URL = 'http://203.194.113.131/api/index.php';
 
 const SalesReport = () => {
   const [period, setPeriod] = useState('daily');
