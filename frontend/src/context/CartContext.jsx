@@ -106,19 +106,19 @@ export const CartProvider = ({ children }) => {
   const removeMultipleFromCart = async (cartIds) => {
     try {
       console.log('🗑️ Removing multiple from cart:', cartIds);
-      
+
       // Filter out invalid items
       const validCartIds = cartIds.filter(id => id);
 
       if (validCartIds.length === 0) return;
 
       // Perform all removals in parallel
-      const removePromises = validCartIds.map(cartId => 
+      const removePromises = validCartIds.map(cartId =>
         cartService.removeFromCart(cartId)
       );
 
       await Promise.all(removePromises);
-      
+
       console.log('✅ All items removed from database');
       // Reload cart once after all removals are done
       await loadCartFromDatabase();

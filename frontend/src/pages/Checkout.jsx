@@ -22,7 +22,7 @@ const Checkout = () => {
     : cart;
   const [currentStep, setCurrentStep] = useState(1);
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [addressMode, setAddressMode] = useState('automatic');
+  const [addressMode, setAddressMode] = useState('manual'); // Default ke manual dulu, akan diubah jika ada alamat profil
   const [databaseAddress, setDatabaseAddress] = useState('');
   const [paymentSettings, setPaymentSettings] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState(null);
@@ -65,7 +65,8 @@ const Checkout = () => {
           const response = await getDefaultAddress(user.id);
           if (response.status === 'success' && response.data) {
             setDatabaseAddress(response.data);
-            // Set automatic mode with database address and user data
+            // Jika ada alamat di profil, otomatis gunakan mode 'automatic'
+            setAddressMode('automatic');
             setFormData(prev => ({
               ...prev,
               fullName: response.data.recipient_name || user?.name || prev.fullName,
@@ -74,6 +75,15 @@ const Checkout = () => {
               address: response.data.address || '',
               city: response.data.city || '',
               zipCode: response.data.zipCode || ''
+            }));
+          } else {
+            // Tidak ada alamat di profil → mode manual, isi nama & email saja dari data user
+            setAddressMode('manual');
+            setFormData(prev => ({
+              ...prev,
+              fullName: user?.name || '',
+              email: user?.email || '',
+              phone: user?.phone || '',
             }));
           }
         }
@@ -316,11 +326,13 @@ const Checkout = () => {
                   </h2>
 
                   {/* Address Mode Selection */}
-                  {databaseAddress && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-                      <p className="text-sm font-semibold text-gray-900 mb-3">Pilih Sumber Alamat</p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-3">
+                    <p className="text-sm font-semibold text-gray-900 mb-3">Pilih Sumber Alamat Pengiriman</p>
+                    
+                    {/* Opsi 1: Alamat dari profil (atau tombol tambah jika belum ada) */}
+                    {databaseAddress ? (
                       <label className={`p-3 border-2 rounded-lg cursor-pointer transition flex items-center gap-3 ${
-                        addressMode === 'automatic' ? 'border-blue-500 bg-white' : 'border-gray-300 bg-white hover:border-gray-400'
+                        addressMode === 'automatic' ? 'border-blue-500 bg-white shadow-sm' : 'border-gray-300 bg-white hover:border-gray-400'
                       }`}>
                         <input
                           type="radio"
@@ -328,31 +340,49 @@ const Checkout = () => {
                           value="automatic"
                           checked={addressMode === 'automatic'}
                           onChange={() => handleAddressModeChange('automatic')}
-                          className="w-4 h-4"
+                          className="w-4 h-4 accent-blue-600"
                         />
-                        <div>
-                          <p className="font-semibold text-gray-900">Alamat Saya</p>
-                          <p className="text-xs text-gray-600">Menggunakan alamat dari profil Anda</p>
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">📍 Alamat Saya</p>
+                          <p className="text-xs text-gray-600 mt-0.5">
+                            {databaseAddress.address || 'Menggunakan alamat dari profil Anda'}
+                          </p>
                         </div>
                       </label>
-                      <label className={`p-3 border-2 rounded-lg cursor-pointer transition flex items-center gap-3 ${
-                        addressMode === 'manual' ? 'border-blue-500 bg-white' : 'border-gray-300 bg-white hover:border-gray-400'
-                      }`}>
-                        <input
-                          type="radio"
-                          name="addressMode"
-                          value="manual"
-                          checked={addressMode === 'manual'}
-                          onChange={() => handleAddressModeChange('manual')}
-                          className="w-4 h-4"
-                        />
+                    ) : (
+                      <div className="p-3 border-2 border-dashed border-orange-300 rounded-lg bg-orange-50 flex items-center justify-between gap-3">
                         <div>
-                          <p className="font-semibold text-gray-900">Buat Baru</p>
-                          <p className="text-xs text-gray-600">Masukkan alamat pengiriman baru</p>
+                          <p className="font-semibold text-orange-800 text-sm">⚠️ Belum Ada Alamat Tersimpan</p>
+                          <p className="text-xs text-orange-600 mt-0.5">Tambahkan alamat di profil agar bisa digunakan otomatis</p>
                         </div>
-                      </label>
-                    </div>
-                  )}
+                        <button
+                          type="button"
+                          onClick={() => navigate('/profile/address')}
+                          className="shrink-0 px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition whitespace-nowrap"
+                        >
+                          + Tambah Alamat
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Opsi 2: Isi manual */}
+                    <label className={`p-3 border-2 rounded-lg cursor-pointer transition flex items-center gap-3 ${
+                      addressMode === 'manual' ? 'border-blue-500 bg-white shadow-sm' : 'border-gray-300 bg-white hover:border-gray-400'
+                    }`}>
+                      <input
+                        type="radio"
+                        name="addressMode"
+                        value="manual"
+                        checked={addressMode === 'manual'}
+                        onChange={() => handleAddressModeChange('manual')}
+                        className="w-4 h-4 accent-blue-600"
+                      />
+                      <div>
+                        <p className="font-semibold text-gray-900">✏️ Isi Alamat Manual</p>
+                        <p className="text-xs text-gray-600 mt-0.5">Masukkan alamat pengiriman secara langsung</p>
+                      </div>
+                    </label>
+                  </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
