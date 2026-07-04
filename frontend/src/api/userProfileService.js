@@ -6,13 +6,9 @@ export const getUserProfile = async (userId) => {
     const response = await axiosInstance.post('?action=get_user_profile', {
       user_id: userId
     });
-    
-    if (response.data?.data?.profile_image) {
-      response.data.data.profile_image = response.data.data.profile_image.replace( 
-        'http://203.194.113.131/api/'
-      );
-    }
-    
+
+    console.log(response.data);
+
     return response.data;
   } catch (error) {
     return {

@@ -36,7 +36,7 @@ const Navbar = () => {
         if (response.status === 'success') {
           const products = response.data || [];
           setAllProducts(products);
-          
+
           // Initialize Fuse with fuzzy search options
           const fuseInstance = new Fuse(products, {
             keys: [
@@ -56,7 +56,7 @@ const Navbar = () => {
         console.error('Error loading products:', error);
       }
     };
-    
+
     loadProducts();
   }, []);
 
@@ -64,12 +64,12 @@ const Navbar = () => {
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    
+
     if (query.trim() === '') {
       setSearchResults([]);
       return;
     }
-    
+
     if (fuse) {
       const results = fuse.search(query);
       setSearchResults(results.slice(0, 8)); // Limit to 8 results
@@ -91,11 +91,11 @@ const Navbar = () => {
         setSearchOpen(false);
       }
     };
-    
+
     if (searchOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -108,11 +108,11 @@ const Navbar = () => {
         setIsUserMenuOpen(false);
       }
     };
-    
+
     if (isUserMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -144,7 +144,7 @@ const Navbar = () => {
         </div>
 
         {/* Search Bar - Desktop */}
-        <div 
+        <div
           ref={searchBoxRef}
           className="hidden lg:block relative"
         >
@@ -217,7 +217,7 @@ const Navbar = () => {
                       )}
                     </button>
                   ))}
-                  
+
                   {searchQuery && (
                     <button
                       onClick={() => {
@@ -257,7 +257,7 @@ const Navbar = () => {
               </span>
             )}
           </Link>
-          
+
           {/* User Account */}
           {logged ? (
             <div className="hidden md:block relative" ref={userMenuRef}>
@@ -268,16 +268,19 @@ const Navbar = () => {
                 <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center border border-gray-300">
                   {user?.profile_image ? (
                     <img
-                      src={user.profile_image.replace('http://203.194.113.131/uploads/', 'http://203.194.113.131/api/')}
+                      src={user.profile_image}
                       alt={user?.name}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
                     />
                   ) : (
                     <FiUser size={18} className="text-gray-600" />
                   )}
                 </div>
               </button>
-              
+
               {/* User Dropdown Menu */}
               {isUserMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100">
@@ -327,7 +330,7 @@ const Navbar = () => {
               </Link>
             </div>
           )}
-          
+
           {/* Mobile Menu Button */}
           <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
