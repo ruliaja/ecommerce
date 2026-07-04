@@ -65,32 +65,32 @@ const Home = () => {
     <div className="bg-white text-gray-900 min-h-screen">
       {/* 1. HERO SECTION */}
       <section className="relative bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 overflow-hidden">
-        <div className="container mx-auto px-6 py-12 md:py-20 flex flex-col md:flex-row items-center gap-12">
+        <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-20 flex flex-col md:flex-row items-center gap-6 sm:gap-12">
           {/* Left Content */}
-          <div className="flex flex-col w-full md:w-1/2 justify-center">
-            <div className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-sm mb-6 w-fit">
-              <FiZap className="text-yellow-400" size={16} />
+          <div className="flex flex-col w-full md:w-1/2 justify-center text-center md:text-left">
+            <div className="flex items-center gap-2 bg-black text-white px-3 py-1.5 rounded-full text-xs sm:text-sm mb-4 sm:mb-6 w-fit mx-auto md:mx-0">
+              <FiZap className="text-yellow-400" size={14} />
               <span className="font-medium">Koleksi Terbatas: Edisi Anak Muda</span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-black leading-[1.1] tracking-tight mb-4 text-black">
-              Gaya Kamu,<br className="hidden md:block" /> Aturan Kamu.
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black leading-[1.1] tracking-tight mb-3 sm:mb-4 text-black">
+              Gaya Kamu,<br className="hidden sm:block" /> Aturan Kamu.
             </h1>
             
-            <p className="text-base md:text-lg mb-6 leading-relaxed max-w-lg" style={{ color: '#374151' }}>
+            <p className="text-sm sm:text-base md:text-lg mb-5 sm:mb-6 leading-relaxed max-w-lg mx-auto md:mx-0" style={{ color: '#374151' }}>
               Temukan outfit street-wear terbaik untuk mengekspresikan jati diri kamu yang sebenarnya di OutfitKita.
             </p>
             
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex gap-3 flex-wrap justify-center md:justify-start">
               <button 
                 onClick={() => navigate('/products')}
-                className="flex items-center gap-2 bg-black text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl text-sm"
+                className="flex items-center gap-2 bg-black text-white font-bold py-2.5 px-5 sm:px-6 rounded-full hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl text-sm"
               >
                 Belanja Sekarang <FiArrowRight size={16} />
               </button>
               <button 
                 onClick={() => navigate('/products')}
-                className="flex items-center gap-2 border-2 border-black text-black font-bold py-2.5 px-6 rounded-full hover:bg-black hover:text-white transition-all text-sm"
+                className="flex items-center gap-2 border-2 border-black text-black font-bold py-2.5 px-5 sm:px-6 rounded-full hover:bg-black hover:text-white transition-all text-sm"
               >
                 Lihat Katalog
               </button>
@@ -98,10 +98,10 @@ const Home = () => {
           </div>
 
           {/* Right Image Slideshow */}
-          <div className="w-full md:w-1/2 relative">
+          <div className="w-full md:w-1/2 relative max-w-xs sm:max-w-sm md:max-w-none mx-auto">
             <div className="absolute -top-10 -right-10 w-80 h-80 bg-yellow-200 rounded-full blur-3xl opacity-30 z-0"></div>
             
-            <div className="relative z-10 w-full aspect-[4/5] md:aspect-[3/4] lg:aspect-square max-h-[500px] rounded-[2rem] shadow-2xl overflow-hidden bg-gray-100 border-8 border-white">
+            <div className="relative z-10 w-full aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] lg:aspect-square max-h-[380px] sm:max-h-[450px] md:max-h-[500px] rounded-[2rem] shadow-2xl overflow-hidden bg-gray-100 border-8 border-white">
               {heroImages.map((img, index) => (
                 <img 
                   key={index}

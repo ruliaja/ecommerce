@@ -239,27 +239,35 @@ const Orders = () => {
                 {/* Order Header */}
                 <button
                   onClick={() => toggleOrderExpand(order.id)}
-                  className="w-full px-6 py-4 hover:bg-gray-50 transition flex items-center justify-between"
+                  className="w-full p-4 sm:px-6 sm:py-4 hover:bg-gray-50 transition flex flex-row items-start sm:items-center justify-between gap-2 sm:gap-4"
                 >
-                  <div className="flex items-center gap-4 flex-1 text-left">
-                    <div className="flex-shrink-0">{getStatusIcon(order.status)}</div>
+                  <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 text-left">
+                    <div className="flex-shrink-0 mt-0.5 sm:mt-0">{getStatusIcon(order.status)}</div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <p className="font-semibold text-gray-900">Pesanan #{order.order_number || order.id}</p>
-                        <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(order.status)}`}>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 mb-1.5 sm:mb-1">
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base leading-tight">
+                          Pesanan #{order.order_number || order.id}
+                        </p>
+                        <span className={`w-fit px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-semibold rounded-full border ${getStatusColor(order.status)}`}>
                           {getStatusLabel(order.status)}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600">{formatDate(order.created_at || order.order_date)}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-0">
+                        {formatDate(order.created_at || order.order_date)}
+                      </p>
+                      <div className="flex sm:hidden items-center justify-between w-full mt-1">
+                         <p className="font-bold text-gray-900 text-sm">{formatCurrency(order.total_price || order.total_amount)}</p>
+                         <p className="text-xs text-gray-500">{order.items?.length || order.quantity || 1} item</p>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end">
-                      <p className="font-bold text-gray-900">{formatCurrency(order.total_price || order.total_amount)}</p>
+                    <div className="hidden sm:flex flex-col items-end">
+                      <p className="font-bold text-gray-900 text-base">{formatCurrency(order.total_price || order.total_amount)}</p>
                       <p className="text-xs text-gray-600">{order.items?.length || order.quantity || 1} item</p>
                     </div>
                   </div>
                   <FiChevronDown
                     size={20}
-                    className={`ml-4 text-gray-400 transition-transform ${expandedOrder === order.id ? 'transform rotate-180' : ''}`}
+                    className={`ml-2 sm:ml-4 text-gray-400 transition-transform shrink-0 mt-1 sm:mt-0 ${expandedOrder === order.id ? 'transform rotate-180' : ''}`}
                   />
                 </button>
 

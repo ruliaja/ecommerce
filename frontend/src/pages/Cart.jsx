@@ -102,178 +102,132 @@ const Cart = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 pt-6 pb-24 px-3 sm:px-6 lg:px-8 sm:py-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Keranjang Belanja</h1>
+        <div className="flex items-center justify-between mb-5 sm:mb-8">
+          <h1 className="text-xl sm:text-3xl font-bold text-gray-900">Keranjang Belanja</h1>
           <button
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
+            className="flex items-center gap-1.5 text-gray-600 hover:text-gray-900 transition text-sm"
           >
-            <FiArrowLeft size={20} />
+            <FiArrowLeft size={18} />
             <span>Kembali</span>
           </button>
         </div>
 
         {!isAuthenticated ? (
-          // Not Logged In
           <div className="bg-white rounded-2xl p-8 text-center">
-            <div className="text-6xl mb-4">🔐</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Silakan Login Terlebih Dahulu</h2>
-            <p className="text-gray-600 mb-6">Anda harus login untuk melihat dan mengelola keranjang belanja Anda</p>
-            <button
-              onClick={() => navigate('/login')}
-              className="bg-black text-white px-8 py-3 rounded-xl hover:bg-gray-800 transition font-semibold"
-            >
+            <div className="text-5xl mb-4">🔐</div>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">Silakan Login Terlebih Dahulu</h2>
+            <p className="text-gray-600 mb-6 text-sm">Anda harus login untuk melihat dan mengelola keranjang belanja</p>
+            <button onClick={() => navigate('/login')} className="bg-black text-white px-8 py-3 rounded-xl hover:bg-gray-800 transition font-semibold">
               Login Sekarang
             </button>
           </div>
         ) : cart.length === 0 ? (
-          // Empty Cart
           <div className="bg-white rounded-2xl p-8 text-center">
-            <div className="text-6xl mb-4">🛒</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Keranjang Anda Kosong</h2>
-            <p className="text-gray-600 mb-6">Mulai berbelanja dan tambahkan produk ke keranjang Anda</p>
-            <button
-              onClick={handleContinueShopping}
-              className="bg-black text-white px-8 py-3 rounded-xl hover:bg-gray-800 transition font-semibold"
-            >
+            <div className="text-5xl mb-4">🛒</div>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">Keranjang Anda Kosong</h2>
+            <p className="text-gray-600 mb-6 text-sm">Mulai berbelanja dan tambahkan produk ke keranjang Anda</p>
+            <button onClick={handleContinueShopping} className="bg-black text-white px-8 py-3 rounded-xl hover:bg-gray-800 transition font-semibold">
               Lanjutkan Berbelanja
             </button>
           </div>
         ) : (
-          // Cart Content
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl overflow-hidden">
-                {/* Select All */}
-                <div className="p-6 border-b border-gray-200 flex items-center justify-between gap-4 bg-gray-50">
-                  <div className="flex items-center gap-4">
+                {/* Select All Bar */}
+                <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-3 bg-gray-50">
+                  <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={selectedItems.size === cart.length && cart.length > 0}
                       onChange={handleSelectAll}
-                      className="w-5 h-5 rounded cursor-pointer"
+                      className="w-5 h-5 rounded cursor-pointer accent-black"
                     />
                     <span className="text-sm font-medium text-gray-700">
                       {selectedItems.size === cart.length && cart.length > 0
-                        ? `Batalkan Pilih Semua (${selectedItems.size})`
+                        ? `Batal Pilih (${selectedItems.size})`
                         : `Pilih Semua (${selectedItems.size}/${cart.length})`}
                     </span>
                   </div>
-
-                  {/* Delete Selected Button - Show when at least one item is selected */}
                   {selectedItems.size > 0 && (
                     <button
                       onClick={handleDeleteAll}
-                      className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium text-sm"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium text-xs"
                     >
-                      <FiTrash2 size={16} />
-                      {selectedItems.size === cart.length ? 'Hapus Semua' : 'Hapus Terpilih'} ({selectedItems.size})
+                      <FiTrash2 size={13} />
+                      Hapus ({selectedItems.size})
                     </button>
                   )}
                 </div>
 
+                {/* Cart Item List */}
                 {cart.map((item, index) => (
                   <div
                     key={item.cart_id || item.id}
-                    className={`p-6 flex gap-6 items-start ${index > 0 ? 'border-t border-gray-200' : ''} ${
-                      selectedItems.has(item.cart_id) ? 'bg-blue-50' : ''
+                    className={`px-4 py-3 sm:p-6 ${index > 0 ? 'border-t border-gray-100' : ''} ${
+                      selectedItems.has(item.cart_id) ? 'bg-blue-50/60' : ''
                     }`}
                   >
-                    {/* Checkbox */}
-                    <div className="shrink-0 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={selectedItems.has(item.cart_id)}
-                        onChange={() => handleSelectItem(item.cart_id)}
-                        className="w-5 h-5 rounded cursor-pointer"
-                      />
-                    </div>
-
-                    {/* Product Image */}
-                    <div className="w-24 h-32 bg-gray-100 rounded-xl overflow-hidden shrink-0">
-                      <img
-                        src={item.image_url || item.imageUrl}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="grow">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">{item.name}</h3>
-                      {(item.selected_size || item.selected_color) && (
-                        <div className="flex items-center gap-2 mb-1">
-                          {item.selected_size && (
-                            <span className="bg-gray-100 text-gray-700 text-xs font-bold px-2.5 py-1 rounded">
-                              {item.selected_size}
-                            </span>
-                          )}
-                          {item.selected_color && (
-                            <span className="bg-gray-100 text-gray-700 text-xs font-bold px-2.5 py-1 rounded">
-                              {item.selected_color}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      <p className="text-sm text-gray-600 mb-4">{item.category}</p>
-                      <p className="text-xl font-bold text-gray-900">
-                        {formatRupiah(item.price)}
-                      </p>
-                    </div>
-
-                    {/* Quantity & Actions */}
-                    <div className="flex flex-col justify-between items-end">
-                      {/* Quantity Control */}
-                      <div className="flex items-center gap-3 bg-gray-100 rounded-lg p-2">
-                        <button
-                          onClick={() =>
-                            handleQuantityChange(item.cart_id, item.quantity - 1)
-                          }
-                          className="p-1 hover:bg-gray-200 rounded transition"
-                        >
-                          <FiMinus size={16} />
-                        </button>
-                        <span className="w-8 text-center font-semibold">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() =>
-                            handleQuantityChange(item.cart_id, item.quantity + 1)
-                          }
-                          className="p-1 hover:bg-gray-200 rounded transition"
-                        >
-                          <FiPlus size={16} />
-                        </button>
+                    <div className="flex gap-3 items-start">
+                      {/* Checkbox */}
+                      <div className="shrink-0 pt-1">
+                        <input
+                          type="checkbox"
+                          checked={selectedItems.has(item.cart_id)}
+                          onChange={() => handleSelectItem(item.cart_id)}
+                          className="w-4 h-4 rounded cursor-pointer accent-black"
+                        />
                       </div>
 
-                      {/* Remove Button */}
-                      <button
-                        onClick={() => handleRemove(item.cart_id)}
-                        className="text-red-500 hover:text-red-700 p-2 transition"
-                      >
-                        <FiTrash2 size={20} />
-                      </button>
-                    </div>
+                      {/* Image */}
+                      <div className="w-16 h-20 sm:w-24 sm:h-32 bg-gray-100 rounded-xl overflow-hidden shrink-0">
+                        <img src={item.image_url || item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                      </div>
 
-                    {/* Subtotal */}
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600 mb-2">Subtotal</p>
-                      <p className="text-lg font-bold text-gray-900">
-                        {formatRupiah(item.price * item.quantity)}
-                      </p>
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-2">{item.name}</h3>
+                          <button onClick={() => handleRemove(item.cart_id)} className="text-red-400 hover:text-red-600 p-0.5 transition shrink-0">
+                            <FiTrash2 size={15} />
+                          </button>
+                        </div>
+
+                        {(item.selected_size || item.selected_color) && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {item.selected_size && <span className="bg-gray-100 text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded">{item.selected_size}</span>}
+                            {item.selected_color && <span className="bg-gray-100 text-gray-700 text-[10px] font-bold px-2 py-0.5 rounded">{item.selected_color}</span>}
+                          </div>
+                        )}
+
+                        <p className="text-sm font-bold text-gray-900 mt-1.5">{formatRupiah(item.price)}</p>
+
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg px-2 py-1">
+                            <button onClick={() => handleQuantityChange(item.cart_id, item.quantity - 1)} className="p-0.5 hover:bg-gray-200 rounded">
+                              <FiMinus size={12} />
+                            </button>
+                            <span className="w-6 text-center text-sm font-bold">{item.quantity}</span>
+                            <button onClick={() => handleQuantityChange(item.cart_id, item.quantity + 1)} className="p-0.5 hover:bg-gray-200 rounded">
+                              <FiPlus size={12} />
+                            </button>
+                          </div>
+                          <p className="text-sm font-bold text-gray-900">{formatRupiah(item.price * item.quantity)}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Continue Shopping Button */}
               <button
                 onClick={handleContinueShopping}
-                className="mt-6 w-full text-center px-6 py-3 border-2 border-gray-300 text-gray-900 rounded-xl hover:bg-gray-50 transition font-semibold"
+                className="mt-3 w-full text-center px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition font-semibold text-sm"
               >
                 Lanjutkan Berbelanja
               </button>
@@ -281,51 +235,52 @@ const Cart = () => {
 
             {/* Order Summary */}
             <div className="h-fit">
-              <div className="bg-white rounded-2xl p-6 sticky top-24">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Ringkasan Pesanan</h2>
-
-                {/* Calculation */}
-                <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Subtotal Dipilih</span>
-                    <span className="font-semibold text-gray-900">
-                      {formatRupiah(getSelectedTotal())}
-                    </span>
+              <div className="bg-white rounded-2xl p-5 lg:sticky lg:top-24">
+                <h2 className="text-base font-bold text-gray-900 mb-4">Ringkasan Pesanan</h2>
+                <div className="space-y-2.5 mb-4 pb-4 border-b border-gray-100">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Subtotal ({selectedItems.size} item)</span>
+                    <span className="font-semibold">{formatRupiah(getSelectedTotal())}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Pengiriman</span>
-                    <span className="font-semibold text-gray-900">Dihitung di checkout</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Pajak</span>
-                    <span className="font-semibold text-gray-900">Dihitung di checkout</span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Pengiriman</span>
+                    <span className="text-gray-400 text-xs font-medium">Dihitung di checkout</span>
                   </div>
                 </div>
-
-                {/* Total */}
-                <div className="flex justify-between mb-6 text-lg font-bold">
+                <div className="flex justify-between mb-4 font-bold text-base">
                   <span>Total</span>
-                  <span className="text-gray-900">{formatRupiah(getSelectedTotal())}</span>
+                  <span>{formatRupiah(getSelectedTotal())}</span>
                 </div>
-
-                {/* Checkout Button */}
                 <button
                   onClick={handleCheckout}
-                  disabled={loading}
-                  className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading || selectedItems.size === 0}
+                  className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition font-bold disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
-                  {loading ? 'Memproses...' : 'Lanjut ke Pembayaran'}
+                  {loading ? 'Memproses...' : `Checkout (${selectedItems.size} item)`}
                 </button>
-
-                {/* Info */}
-                <p className="text-xs text-gray-500 text-center mt-4">
-                  Dengan melanjutkan, Anda menyetujui Syarat & Ketentuan kami
-                </p>
+                <p className="text-[10px] text-gray-400 text-center mt-3">Dengan melanjutkan, Anda menyetujui Syarat & Ketentuan kami</p>
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* Mobile Sticky Checkout Bar */}
+      {cart.length > 0 && isAuthenticated && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 flex items-center gap-3 lg:hidden z-40 shadow-lg">
+          <div className="flex-1">
+            <p className="text-xs text-gray-500">Total ({selectedItems.size} dipilih)</p>
+            <p className="text-base font-black text-gray-900">{formatRupiah(getSelectedTotal())}</p>
+          </div>
+          <button
+            onClick={handleCheckout}
+            disabled={loading || selectedItems.size === 0}
+            className="px-6 py-3 bg-black text-white rounded-xl font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            {loading ? 'Memproses...' : 'Checkout'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

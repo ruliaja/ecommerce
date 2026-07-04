@@ -263,7 +263,7 @@ const ProductDetail = () => {
   return (
     <div className="bg-white min-h-screen">
       {/* Header Navigation */}
-      <div className="container mx-auto px-6 py-3">
+      <div className="container mx-auto px-4 sm:px-6 py-3">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 hover:text-black transition-colors mb-2 text-xs font-black uppercase tracking-[0.2em]"
@@ -275,8 +275,8 @@ const ProductDetail = () => {
       </div>
 
       {/* Product Section */}
-      <section className="container mx-auto px-6 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <section className="container mx-auto px-4 sm:px-6 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-8 lg:mb-12">
           
           {/* Product Images */}
           <div className="space-y-4">
@@ -312,8 +312,8 @@ const ProductDetail = () => {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-white rounded-3xl p-4 sm:p-6 border border-gray-100 shadow-sm space-y-3 sm:space-y-4">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-[10px] font-black uppercase tracking-[0.2em] px-2.5 py-1 bg-gray-100 rounded-md" style={{ color: '#4b5563' }}>
@@ -325,7 +325,7 @@ const ProductDetail = () => {
                     </span>
                   )}
                 </div>
-                <h1 className="text-3xl font-black text-black leading-tight tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-black text-black leading-tight tracking-tight">
                   {product.name}
                 </h1>
               </div>
@@ -345,11 +345,11 @@ const ProductDetail = () => {
 
               <div>
                 <div className="flex items-baseline gap-3">
-                  <p className="text-4xl font-black text-black">
+                  <p className="text-3xl sm:text-4xl font-black text-black">
                     {formatRupiah(product.price)}
                   </p>
                   {product.original_price && product.original_price > product.price && (
-                    <p className="text-lg font-bold line-through" style={{ color: '#9ca3af' }}>
+                    <p className="text-base sm:text-lg font-bold line-through" style={{ color: '#9ca3af' }}>
                       {formatRupiah(product.original_price)}
                     </p>
                   )}
@@ -359,7 +359,7 @@ const ProductDetail = () => {
 
             {/* Description Card */}
             {product.description && (
-              <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
+              <div className="bg-gray-50 rounded-3xl p-4 sm:p-6 border border-gray-100">
                 <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-4 text-gray-900">Deskripsi Produk</h3>
                 <div className={`text-sm relative overflow-hidden transition-all duration-300 ${isDescExpanded ? '' : 'max-h-40'}`}>
                   {formatDescription(product.description)}
@@ -377,7 +377,7 @@ const ProductDetail = () => {
             )}
 
             {/* Selection Options */}
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-6">
+            <div className="bg-white rounded-3xl p-4 sm:p-6 border border-gray-100 shadow-sm space-y-5 sm:space-y-6">
               {/* Size Selector */}
               {availableSizes.length > 0 && (
                 <div>
@@ -433,7 +433,7 @@ const ProductDetail = () => {
                     <label className="block text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: '#111827' }}>
                       Jumlah
                     </label>
-                    <div className="flex items-center bg-gray-100 rounded-xl p-1.5 w-fit">
+                    <div className="flex items-center bg-gray-100 rounded-xl p-1 w-fit">
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                         className="w-8 h-8 rounded-lg bg-white flex items-center justify-center font-bold hover:shadow-sm active:scale-95 transition-all text-black"
@@ -455,28 +455,29 @@ const ProductDetail = () => {
                     </div>
                   </div>
                   
-                  <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider ${
+                  <div className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-wider ${
                     displayStock > 0
                       ? 'bg-green-50 text-green-700 border border-green-100'
                       : 'bg-red-50 text-red-700 border border-red-100'
                   }`}>
-                    {displayStock > 0 ? `Tersedia: ${displayStock} unit` : 'Stok Habis'}
+                    {displayStock > 0 ? `Tersedia: ${displayStock}` : 'Habis'}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-5 gap-3 mt-6">
+                <div className="grid grid-cols-5 gap-2 sm:gap-3 mt-5 sm:mt-6">
                   <button
                     onClick={handleAddToCart}
                     disabled={displayStock <= 0}
-                    className="col-span-4 bg-black text-white h-14 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-all disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0"
+                    className="col-span-4 bg-black text-white h-12 sm:h-14 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm uppercase tracking-widest hover:bg-gray-800 transition-all disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 sm:gap-3 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0"
                   >
                     <FiShoppingBag size={18} />
-                    Tambah ke Keranjang
+                    <span className="hidden sm:inline">Tambah ke Keranjang</span>
+                    <span className="sm:hidden">Keranjang</span>
                   </button>
                   <button
                     onClick={handleToggleWishlist}
                     disabled={isUpdatingWishlist}
-                    className={`h-14 rounded-2xl transition-all flex items-center justify-center disabled:opacity-50 border-2 ${
+                    className={`h-12 sm:h-14 rounded-xl sm:rounded-2xl transition-all flex items-center justify-center disabled:opacity-50 border-2 ${
                       isWishlisted
                         ? 'bg-red-50 border-red-500 text-red-500 shadow-inner'
                         : 'bg-white border-gray-100 text-black hover:border-black shadow-sm'
@@ -489,21 +490,21 @@ const ProductDetail = () => {
             </div>
 
             {/* Shipping Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center gap-2">
-                <FiTruck className="text-black" size={18} />
-                <p className="text-[10px] font-black uppercase tracking-widest text-black">Gratis Ongkir</p>
-                <p className="text-[10px] text-gray-500">Min. Rp500rb</p>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                <FiTruck className="text-black" size={16} />
+                <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-black">Gratis Ongkir</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500 hidden sm:block">Min. Rp500rb</p>
               </div>
-              <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center gap-2">
-                <FiRotateCcw className="text-black" size={18} />
-                <p className="text-[10px] font-black uppercase tracking-widest text-black">30 Hari Retur</p>
-                <p className="text-[10px] text-gray-500">Tanpa Tanya</p>
+              <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                <FiRotateCcw className="text-black" size={16} />
+                <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-black">30 Hari Retur</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500 hidden sm:block">Tanpa Tanya</p>
               </div>
-              <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center gap-2">
-                <FiCheck className="text-black" size={18} />
-                <p className="text-[10px] font-black uppercase tracking-widest text-black">QC Passed</p>
-                <p className="text-[10px] text-gray-500">Kualitas Terjamin</p>
+              <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-gray-100 shadow-sm flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                <FiCheck className="text-black" size={16} />
+                <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-black">QC Passed</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500 hidden sm:block">Terjamin</p>
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
 
   const selectedItemIds = location.state?.selectedItemIds || [];
-  const checkoutItems = selectedItemIds.length > 0 
+  const checkoutItems = selectedItemIds.length > 0
     ? cart.filter(item => selectedItemIds.includes(item.cart_id))
     : cart;
   const [currentStep, setCurrentStep] = useState(1);
@@ -174,7 +174,7 @@ const Checkout = () => {
   const validateForm = () => {
     // Skip city and zipCode validation if using automatic address
     const requiredFields = ['fullName', 'email', 'phone'];
-    
+
     if (addressMode === 'manual') {
       requiredFields.push('street', 'city', 'zipCode');
     } else {
@@ -246,7 +246,7 @@ const Checkout = () => {
       if (response.status === 'success') {
         setOrderPlaced(true);
         showSuccess('Pesanan berhasil dibuat!');
-        
+
         // Backend otomatis menghapus item yang di-checkout dari database
         if (typeof syncCartFromDatabase === 'function') {
           syncCartFromDatabase();
@@ -303,11 +303,10 @@ const Checkout = () => {
           {[1, 2, 3].map(step => (
             <div
               key={step}
-              className={`p-4 rounded-xl text-center font-bold transition ${
-                step <= currentStep
+              className={`p-4 rounded-xl text-center font-bold transition ${step <= currentStep
                   ? 'bg-black text-white'
                   : 'bg-gray-200 text-gray-600'
-              }`}
+                }`}
             >
               {step === 1 ? 'Alamat' : step === 2 ? 'Pengiriman' : 'Pembayaran'}
             </div>
@@ -328,12 +327,11 @@ const Checkout = () => {
                   {/* Address Mode Selection */}
                   <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-3">
                     <p className="text-sm font-semibold text-gray-900 mb-3">Pilih Sumber Alamat Pengiriman</p>
-                    
+
                     {/* Opsi 1: Alamat dari profil (atau tombol tambah jika belum ada) */}
                     {databaseAddress ? (
-                      <label className={`p-3 border-2 rounded-lg cursor-pointer transition flex items-center gap-3 ${
-                        addressMode === 'automatic' ? 'border-blue-500 bg-white shadow-sm' : 'border-gray-300 bg-white hover:border-gray-400'
-                      }`}>
+                      <label className={`p-3 border-2 rounded-lg cursor-pointer transition flex items-center gap-3 ${addressMode === 'automatic' ? 'border-blue-500 bg-white shadow-sm' : 'border-gray-300 bg-white hover:border-gray-400'
+                        }`}>
                         <input
                           type="radio"
                           name="addressMode"
@@ -366,9 +364,8 @@ const Checkout = () => {
                     )}
 
                     {/* Opsi 2: Isi manual */}
-                    <label className={`p-3 border-2 rounded-lg cursor-pointer transition flex items-center gap-3 ${
-                      addressMode === 'manual' ? 'border-blue-500 bg-white shadow-sm' : 'border-gray-300 bg-white hover:border-gray-400'
-                    }`}>
+                    <label className={`p-3 border-2 rounded-lg cursor-pointer transition flex items-center gap-3 ${addressMode === 'manual' ? 'border-blue-500 bg-white shadow-sm' : 'border-gray-300 bg-white hover:border-gray-400'
+                      }`}>
                       <input
                         type="radio"
                         name="addressMode"
@@ -396,9 +393,8 @@ const Checkout = () => {
                         onChange={handleInputChange}
                         placeholder="Masukkan nama lengkap"
                         readOnly={addressMode === 'automatic'}
-                        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black ${
-                          addressMode === 'automatic' ? 'bg-gray-100 cursor-not-allowed' : ''
-                        }`}
+                        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black ${addressMode === 'automatic' ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                       />
                     </div>
 
@@ -413,9 +409,8 @@ const Checkout = () => {
                         onChange={handleInputChange}
                         placeholder="Masukkan email"
                         readOnly={addressMode === 'automatic'}
-                        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black ${
-                          addressMode === 'automatic' ? 'bg-gray-100 cursor-not-allowed' : ''
-                        }`}
+                        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black ${addressMode === 'automatic' ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                       />
                     </div>
 
@@ -430,9 +425,8 @@ const Checkout = () => {
                         onChange={handleInputChange}
                         placeholder="Masukkan nomor telepon"
                         readOnly={addressMode === 'automatic'}
-                        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black ${
-                          addressMode === 'automatic' ? 'bg-gray-100 cursor-not-allowed' : ''
-                        }`}
+                        className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black ${addressMode === 'automatic' ? 'bg-gray-100 cursor-not-allowed' : ''
+                          }`}
                       />
                     </div>
 
@@ -451,7 +445,7 @@ const Checkout = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
                           />
                         </div>
-                        
+
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 col-span-1 sm:col-span-2">
                           <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">No. Rumah</label>
@@ -589,11 +583,10 @@ const Checkout = () => {
                     {Object.entries(shippingCosts).map(([method, cost]) => (
                       <label
                         key={method}
-                        className={`block p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                          formData.shippingMethod === method
+                        className={`block p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${formData.shippingMethod === method
                             ? 'border-black bg-gray-50 shadow-sm'
                             : 'border-gray-200 hover:border-gray-400 hover:shadow-sm'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-4">
                           <input
@@ -609,8 +602,8 @@ const Checkout = () => {
                               {method === 'standard'
                                 ? 'Standar (3-5 hari)'
                                 : method === 'express'
-                                ? 'Ekspres (1-2 hari)'
-                                : 'Kilat (1 hari)'}
+                                  ? 'Ekspres (1-2 hari)'
+                                  : 'Kilat (1 hari)'}
                             </p>
                           </div>
                           <p className="font-bold text-gray-900">
@@ -650,11 +643,10 @@ const Checkout = () => {
                       {paymentSettings.map(bank => (
                         <label
                           key={bank.id}
-                          className={`block p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                            selectedPayment?.id === bank.id
+                          className={`block p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${selectedPayment?.id === bank.id
                               ? 'border-black bg-gray-50 shadow-sm'
                               : 'border-gray-200 hover:border-gray-400 hover:shadow-sm'
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center gap-4">
                             <input
