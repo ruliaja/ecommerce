@@ -96,7 +96,7 @@ const UserProfile = () => {
       formDataForUpload.append('image', profileImage);
 
       const response = await axiosInstance.post(
-        'http://203.194.113.131/api/index.php?action=upload_image',
+        'https://outfitkita.my.id/api/index.php?action=upload_image',
         formDataForUpload,
         {
           headers: {

@@ -135,7 +135,7 @@ const ProductManagement = () => {
       setUploadProgress(0);
       const fd = new FormData();
       fd.append('image', file);
-      const uploadRes = await axios.post('http://203.194.113.131/api/index.php?action=upload_image', fd, {
+      const uploadRes = await axios.post('https://outfitkita.my.id/api/index.php?action=upload_image', fd, {
         onUploadProgress: (progressEvent) => {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percent);

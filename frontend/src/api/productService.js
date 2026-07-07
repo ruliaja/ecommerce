@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const API_URL = 'http://203.194.113.131/api/';
+const API_URL = 'https://outfitkita.my.id/api/';
 
 // Normalize product data from API to match frontend format
 const normalizeProduct = (product) => {
   let imageUrl = product.image_url;
   // Perbaiki URL gambar yang masih hardcoded ke localhost dari database lama
   if (imageUrl) {
-    imageUrl = imageUrl.replace('http://203.194.113.131/backend');
+    imageUrl = imageUrl.replace('https://outfitkita.my.id/backend');
   }
 
   return {
