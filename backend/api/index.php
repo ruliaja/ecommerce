@@ -13,7 +13,17 @@ $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 
 // Ambil input JSON dari React
-$input = json_decode(file_get_contents('php://input'), true);
+$input = [];
+
+if ($method === 'GET') {
+    $input = $_GET;
+} else {
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (!$input) {
+        $input = $_POST;
+    }
+}
 
 switch ($action) {
     case 'register':
