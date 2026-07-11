@@ -561,7 +561,7 @@ switch ($action) {
         break;
 
     case 'get_favorites':
-        if ($method == 'GET' || $method == 'POST') {
+        if ($method == 'GET') {
             try {
                 $result = getFavorites($db, $input);
                 echo json_encode($result);
@@ -572,7 +572,7 @@ switch ($action) {
         break;
 
     case 'is_favorite':
-        if ($method == 'GET' || $method == 'POST') {
+        if ($method == 'GET') {
             try {
                 $result = isFavorite($db, $input);
                 echo json_encode($result);
@@ -767,8 +767,8 @@ switch ($action) {
             if (move_uploaded_file($file['tmp_name'], $destination)) {
                 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https' : 'http';
                 // Use SCRIPT_NAME (which doesn't include query strings) to build the base path
-                $scriptPath = $_SERVER['SCRIPT_NAME']; // e.g. /OutFitKita3/backend/api/index.php
-                $basePath = preg_replace('#/api/index\.php$#', '', $scriptPath); // /OutFitKita3/backend
+                $scriptPath = $_SERVER['SCRIPT_NAME']; 
+                $basePath = preg_replace('#/api/index\.php$#', '', $scriptPath);
                 $proofUrl = $protocol . '://' . $_SERVER['HTTP_HOST'] . $basePath . '/uploads/payment_proofs/' . $filename;
 
                 // Update order: set payment_proof and status to waiting_confirmation
