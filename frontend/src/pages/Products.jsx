@@ -199,8 +199,8 @@ const Products = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           
           {/* Sidebar - Filters */}
-          <div className="lg:w-64 shrink-0">
-            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm sticky top-24 space-y-5">
+          <div className="lg:w-64 shrink-0 z-30">
+            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm sticky top-24 space-y-5 z-30">
               {/* Search */}
               <div>
                 <label className="block text-[11px] font-black mb-2 uppercase tracking-[0.2em]" style={{ color: '#374151' }}>

@@ -398,13 +398,10 @@ const Navbar = () => {
 
           <hr className="my-2" />
 
-          <Link to="/" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Beranda</Link>
-          <Link to="/shop" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Produk</Link>
-          <Link to="/about" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Tentang</Link>
           {logged ? (
             <>
-              <div className="py-3 border-t border-b border-gray-200">
-                <div className="flex items-center gap-3 mb-2">
+              <div className="pb-3 mb-2 border-b border-gray-200">
+                <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center border border-gray-300">
                     {user?.profile_image ? (
                       <img
@@ -433,17 +430,21 @@ const Navbar = () => {
                   handleLogout();
                   setIsOpen(false);
                 }}
-                className="w-full text-left text-lg font-semibold text-red-600"
+                className="w-full text-left text-lg font-semibold text-red-600 pb-2 border-b border-gray-200 mb-2"
               >
                 Keluar
               </button>
             </>
           ) : (
-            <div className="flex flex-col gap-3 pt-3 border-t border-gray-200">
+            <div className="flex flex-col gap-3 pb-3 border-b border-gray-200 mb-2">
               <Link to="/login" className="block text-lg font-semibold text-center py-2 border border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-50 transition" onClick={() => setIsOpen(false)}>Masuk</Link>
               <Link to="/register" className="block text-lg font-semibold text-center py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition" onClick={() => setIsOpen(false)}>Daftar</Link>
             </div>
           )}
+
+          <Link to="/" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Beranda</Link>
+          <Link to="/shop" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Produk</Link>
+          <Link to="/about" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Tentang</Link>
         </div>
       )}
     </nav>
