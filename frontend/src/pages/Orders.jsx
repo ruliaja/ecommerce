@@ -63,6 +63,23 @@ const Orders = () => {
     }
   };
 
+  const handleReceiveOrder = async (orderId) => {
+    const { isConfirmed } = await showConfirm('Pesanan Diterima', 'Apakah Anda yakin telah menerima pesanan ini dengan baik?', 'Ya, Sudah Diterima', 'Kembali');
+    if (isConfirmed) {
+      try {
+        const response = await updateOrderStatus(orderId, 'completed');
+        if (response.status === 'success') {
+          showSuccess('Status pesanan berhasil diperbarui menjadi Diterima');
+          loadOrders();
+        } else {
+          showError(response.message || 'Gagal memperbarui status pesanan');
+        }
+      } catch (error) {
+        showError('Terjadi kesalahan saat memperbarui status pesanan');
+      }
+    }
+  };
+
 
   const sortOrders = (ordersList) => {
     return ordersList.sort((a, b) => {
@@ -484,6 +501,14 @@ const Orders = () => {
                           className="flex-1 px-4 py-2 border border-red-300 text-red-600 font-medium text-sm rounded-lg hover:bg-red-50 transition"
                         >
                           Batalkan Pesanan
+                        </button>
+                      )}
+                      {(order.status || '').toLowerCase() === 'shipped' && (
+                        <button
+                          onClick={() => handleReceiveOrder(order.id)}
+                          className="flex-1 px-4 py-2 bg-green-500 text-white font-medium text-sm rounded-lg hover:bg-green-600 transition"
+                        >
+                          Pesanan Diterima
                         </button>
                       )}
                       <button className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-medium text-sm rounded-lg hover:bg-gray-50 transition">
