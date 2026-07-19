@@ -427,6 +427,12 @@ const Orders = () => {
                           <p className="text-sm text-gray-900">{order.address}</p>
                         </div>
                       )}
+                      {order.notes && (
+                        <div>
+                          <p className="text-xs font-semibold text-gray-600 uppercase mb-1">Catatan</p>
+                          <p className="text-sm text-gray-900 italic">"{order.notes}"</p>
+                        </div>
+                      )}
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <p className="text-xs font-semibold text-gray-600 uppercase mb-1">Tanggal Pesan</p>

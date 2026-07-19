@@ -124,6 +124,9 @@ function getUserOrders($db, $userId) {
         if (in_array('payment_method', $columnNames)) {
             $selectParts[] = 'o.payment_method';
         }
+        if (in_array('notes', $columnNames)) {
+            $selectParts[] = 'o.notes';
+        }
         
         $selectClause = implode(', ', $selectParts);
         
@@ -235,6 +238,7 @@ function getUserOrders($db, $userId) {
                 'payment_uploaded_at' => $row['payment_uploaded_at'] ?? null,
                 'rejection_reason' => $row['rejection_reason'] ?? null,
                 'payment_method' => $row['payment_method'] ?? 'transfer',
+                'notes' => $row['notes'] ?? null,
                 'items' => $items
             ];
         }

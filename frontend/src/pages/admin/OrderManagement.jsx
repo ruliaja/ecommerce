@@ -297,10 +297,18 @@ const OrderManagement = () => {
                       {/* Customer Info */}
                       <div>
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Info Pelanggan</p>
-                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                          <p className="text-xs font-black text-slate-800">{viewOrder.data.customer_name || 'Guest'}</p>
-                          <p className="text-xs text-slate-500 mb-2">{viewOrder.data.customer_email || '-'}</p>
+                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
+                          <div>
+                            <p className="text-xs font-black text-slate-800">{viewOrder.data.customer_name || 'Guest'}</p>
+                            <p className="text-xs text-slate-500">{viewOrder.data.customer_email || '-'}</p>
+                          </div>
                           <p className="text-[11px] text-slate-600 leading-relaxed font-medium">{viewOrder.data.customer_address || 'Tidak ada alamat'}</p>
+                          {viewOrder.data.notes && (
+                            <div className="pt-2 border-t border-slate-200">
+                              <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Catatan</p>
+                              <p className="text-xs text-slate-700 italic">"{viewOrder.data.notes}"</p>
+                            </div>
+                          )}
                         </div>
                       </div>
 
