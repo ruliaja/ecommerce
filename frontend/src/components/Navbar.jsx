@@ -420,7 +420,7 @@ const Navbar = () => {
                 </div>
               </div>
               <Link to="/profile" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Profil Saya</Link>
-              <Link to="/orders" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Pesanan Saya</Link>
+              <Link to="/profile/orders" className="block text-lg font-semibold" onClick={() => setIsOpen(false)}>Pesanan Saya</Link>
               <Link to="/favorites" className="text-lg font-semibold flex items-center gap-2" onClick={() => setIsOpen(false)}>
                 <FiHeart className="text-red-500" />
                 Favorit Saya
