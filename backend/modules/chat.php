@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Get or create an active conversation for a customer user.
- * Each customer can only have one active conversation at a time.
- */
 function getOrCreateConversation($db, $userId) {
     // Check if user exists
     $userCheck = $db->prepare("SELECT id, name, role FROM users WHERE id = ?");
