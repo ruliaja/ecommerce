@@ -38,4 +38,10 @@ if ($db->connect_error) {
 
 // Set charset to utf8mb4
 $db->set_charset("utf8mb4");
+
+// Set timezone to Asia/Jakarta for PHP
+date_default_timezone_set('Asia/Jakarta');
+
+// Set MySQL timezone to match PHP timezone
+$db->query("SET time_zone = '+07:00'");
 ?>
