@@ -52,8 +52,8 @@ const OrderSuccess = () => {
   // ── File processing ────────────────────────────────────────────────────────
   const processFile = (file) => {
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      showError('Ukuran file maksimal 5MB');
+    if (file.size > 15 * 1024 * 1024) {
+      showError('Ukuran file maksimal 15MB');
       return;
     }
     const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
