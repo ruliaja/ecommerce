@@ -14,6 +14,10 @@ const OrderManagement = () => {
   const [viewOrder, setViewOrder] = useState(null);
   const [proofZoom, setProofZoom] = useState(false);
   const [confirmingOrder, setConfirmingOrder] = useState(null);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [rejectOrderId, setRejectOrderId] = useState(null);
+  const [rejectReason, setRejectReason] = useState('');
+  const [rejectError, setRejectError] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -71,12 +75,15 @@ const OrderManagement = () => {
     const newStatus = action === 'approve' ? 'processing' : 'rejected';
     
     if (action === 'reject') {
-      rejectionReason = window.prompt('Alasan penolakan (wajib):');
-      if (!rejectionReason?.trim()) return;
-    } else {
-      const { isConfirmed } = await showConfirm('Setujui Pembayaran', 'Setujui pembayaran ini?', 'Ya, Setujui', 'Batal');
-      if (!isConfirmed) return;
+      setRejectOrderId(orderId);
+      setRejectReason('');
+      setRejectError('');
+      setRejectModalOpen(true);
+      return;
     }
+
+    const { isConfirmed } = await showConfirm('Setujui Pembayaran', 'Setujui pembayaran ini?', 'Ya, Setujui', 'Batal');
+    if (!isConfirmed) return;
 
     setConfirmingOrder(orderId);
     try {
@@ -90,6 +97,34 @@ const OrderManagement = () => {
       }
     } finally {
       setConfirmingOrder(null);
+    }
+  };
+
+  const handleRejectSubmit = async () => {
+    if (!rejectReason.trim()) {
+      setRejectError('Alasan penolakan wajib diisi.');
+      return;
+    }
+
+    const orderId = rejectOrderId;
+    if (!orderId) return;
+
+    setRejectModalOpen(false);
+    setConfirmingOrder(orderId);
+    try {
+      const res = await updateOrderStatus(orderId, 'rejected', rejectReason.trim());
+      if (res.status === 'success') {
+        await fetchOrders();
+        if (viewOrder?.id === orderId) {
+          const updated = await getOrderDetail(orderId);
+          if (updated.status === 'success') setViewOrder(prev => ({ ...prev, data: updated.data }));
+        }
+      }
+    } finally {
+      setConfirmingOrder(null);
+      setRejectOrderId(null);
+      setRejectReason('');
+      setRejectError('');
     }
   };
 
@@ -473,6 +508,66 @@ const OrderManagement = () => {
         )}
 
         {/* Proof Zoom */}
+        {rejectModalOpen && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[220] flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg border border-slate-200 overflow-hidden">
+              <div className="px-6 py-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-500">Alasan Penolakan</p>
+                  <h3 className="text-lg font-bold text-slate-900">Tolak Pesanan</h3>
+                </div>
+                <button
+                  onClick={() => {
+                    setRejectModalOpen(false);
+                    setRejectReason('');
+                    setRejectError('');
+                  }}
+                  className="p-2 rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all"
+                >
+                  <FiX size={20} />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Masukkan alasan penolakan pembayaran. Alasan ini akan ditampilkan kepada pelanggan.
+                </p>
+                <textarea
+                  value={rejectReason}
+                  onChange={(e) => {
+                    setRejectReason(e.target.value);
+                    if (rejectError) setRejectError('');
+                  }}
+                  placeholder="Contoh: Bukti pembayaran tidak valid atau tidak sesuai dengan nama pemilik rekening."
+                  className="w-full min-h-[140px] px-4 py-3 border rounded-3xl border-slate-200 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100 outline-none text-sm resize-none"
+                />
+                {rejectError && (
+                  <p className="text-sm text-red-600 font-semibold">{rejectError}</p>
+                )}
+              </div>
+
+              <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row gap-3 justify-end">
+                <button
+                  onClick={() => {
+                    setRejectModalOpen(false);
+                    setRejectReason('');
+                    setRejectError('');
+                  }}
+                  className="px-5 py-3 rounded-2xl bg-white text-slate-700 border border-slate-200 font-semibold hover:bg-slate-100 transition-all"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleRejectSubmit}
+                  className="px-5 py-3 rounded-2xl bg-rose-500 text-white font-semibold hover:bg-rose-600 transition-all"
+                >
+                  Kirim Alasan
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {proofZoom && viewOrder?.data?.payment_proof && (
           <div className="fixed inset-0 bg-slate-900/95 z-[200] flex items-center justify-center p-4 cursor-zoom-out" onClick={() => setProofZoom(false)}>
             <img src={viewOrder.data.payment_proof} className="max-w-full max-h-full object-contain shadow-2xl rounded-lg" alt="Full Proof" />
