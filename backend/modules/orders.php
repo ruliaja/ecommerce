@@ -439,33 +439,51 @@ function getSalesReport($db, $period, $startDate = null, $endDate = null) {
                 throw new Exception("Invalid period: $period");
         }
         
-        // Query 1: Orders and revenue (simple, no JOINs — matches dashboard logic)
+        // Query 1: All incoming orders in the selected period (includes all statuses)
+        $allOrderQuery = "
+            SELECT 
+                $dateExpr as date_label,
+                COUNT(*) as total_orders
+            FROM orders
+            WHERE 1=1 $dateFilter
+            GROUP BY $dateExpr
+            ORDER BY $dateExpr ASC
+        ";
+
+        $allOrderResult = $db->query($allOrderQuery);
+        if (!$allOrderResult) {
+            throw new Exception("All order query failed: " . $db->error);
+        }
+
+        $allOrderMap = [];
+        while ($row = $allOrderResult->fetch_assoc()) {
+            $allOrderMap[$row['date_label']] = (int)$row['total_orders'];
+        }
+
+        // Query 2: Revenue only from successful sales statuses
         $orderQuery = "
             SELECT 
                 $dateExpr as date_label,
-                COUNT(*) as total_orders,
                 COALESCE(SUM($priceColumn), 0) as total_revenue
             FROM orders 
             WHERE status IN $validStatuses $dateFilter
             GROUP BY $dateExpr
             ORDER BY $dateExpr ASC
         ";
-        
+
         $orderResult = $db->query($orderQuery);
         if (!$orderResult) {
             throw new Exception("Order query failed: " . $db->error);
         }
-        
-        // Build order data map
+
         $orderMap = [];
         while ($row = $orderResult->fetch_assoc()) {
             $orderMap[$row['date_label']] = [
                 'revenue' => (int)$row['total_revenue'],
-                'orders' => (int)$row['total_orders'],
             ];
         }
-        
-        // Query 2: Item counts per period
+
+        // Query 3: Item counts per period for successful sales only
         $dateExprAliased = str_replace('created_at', 'o.created_at', $dateExpr);
         $dateFilterAliased = str_replace('created_at', 'o.created_at', $dateFilter);
         $itemQuery = "
@@ -477,7 +495,7 @@ function getSalesReport($db, $period, $startDate = null, $endDate = null) {
             WHERE o.status IN $validStatuses $dateFilterAliased
             GROUP BY $dateExprAliased
         ";
-        
+
         $itemResult = $db->query($itemQuery);
         $itemMap = [];
         if ($itemResult) {
@@ -485,24 +503,24 @@ function getSalesReport($db, $period, $startDate = null, $endDate = null) {
                 $itemMap[$row['date_label']] = (int)$row['total_items'];
             }
         }
-        // Merge both maps into final data
+
+        // Merge all order counts with sales metrics
         $data = [];
         $grandTotalRevenue = 0;
         $grandTotalOrders = 0;
         $grandTotalItems = 0;
-        
-        foreach ($orderMap as $label => $info) {
-            $revenue = $info['revenue'];
-            $orders = $info['orders'];
+
+        foreach ($allOrderMap as $label => $orders) {
+            $revenue = $orderMap[$label]['revenue'] ?? 0;
             $items = $itemMap[$label] ?? 0;
-            
+
             $data[] = [
                 'label' => $label,
                 'revenue' => $revenue,
                 'orders' => $orders,
                 'items' => $items,
             ];
-            
+
             $grandTotalRevenue += $revenue;
             $grandTotalOrders += $orders;
             $grandTotalItems += $items;
