@@ -1040,6 +1040,11 @@ function updateOrderStatus($db, $orderId, $status, $rejectionReason = null) {
             'rejected' => 'rejected',
             'payment_rejected' => 'rejected',
         ];
+
+        // If admin finalizes a rejected order as cancelled, normalize it to the database's cancelled state.
+        if (strtolower($currentStatus) === 'rejected' && strtolower($status) === 'cancelled') {
+            $mappedStatus = 'cancel';
+        }
         
         $statusLower = strtolower($status);
         if (!isset($statusMap[$statusLower])) {

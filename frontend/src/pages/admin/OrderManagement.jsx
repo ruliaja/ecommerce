@@ -140,6 +140,7 @@ const OrderManagement = () => {
       'delivered': 'bg-green-100 text-green-600 border-green-200',
       'completed': 'bg-green-100 text-green-600 border-green-200',
       'cancel': 'bg-red-100 text-red-600 border-red-200',
+      'cancelled': 'bg-red-100 text-red-600 border-red-200',
       'rejected': 'bg-red-100 text-red-600 border-red-200',
     };
     return map[s] || 'bg-slate-100 text-slate-600 border-slate-200';
@@ -155,6 +156,7 @@ const OrderManagement = () => {
       'delivered': 'Completed',
       'completed': 'Completed',
       'cancel': 'Cancelled',
+      'cancelled': 'Cancelled',
       'rejected': 'Rejected',
     };
     return map[s] || status;
@@ -483,8 +485,8 @@ const OrderManagement = () => {
                     </button>
                   )}
 
-                  {/* Cancel button appears for everything EXCEPT cancelled/rejected/shipped/delivered/completed */}
-                  {!['cancelled', 'cancel', 'rejected', 'shipped', 'delivered', 'completed'].includes((viewOrder.data?.status || '').toLowerCase()) && (
+                  {/* Cancel button is available for rejected orders too, so admin can finalize them as cancelled */}
+                  {!['cancelled', 'cancel', 'shipped', 'delivered', 'completed'].includes((viewOrder.data?.status || '').toLowerCase()) && (
                     <button
                       onClick={async () => {
                         const { isConfirmed } = await showConfirm('Batalkan Pesanan', 'Batalkan pesanan ini?', 'Ya, Batalkan', 'Batal');
