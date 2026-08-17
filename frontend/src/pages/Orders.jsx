@@ -517,7 +517,11 @@ const Orders = () => {
                           Pesanan Diterima
                         </button>
                       )}
-                      <button className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-medium text-sm rounded-lg hover:bg-gray-50 transition">
+                      <button
+                        type="button"
+                        onClick={() => window.dispatchEvent(new CustomEvent('open-chat'))}
+                        className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-medium text-sm rounded-lg hover:bg-gray-50 transition"
+                      >
                         Hubungi Penjual
                       </button>
                     </div>

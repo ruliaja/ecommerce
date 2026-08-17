@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiInstagram, FiTwitter, FiFacebook } from 'react-icons/fi';
+import { FiInstagram, FiTwitter, FiFacebook, FiMessageCircle } from 'react-icons/fi';
 
 const Footer = () => {
   return (
@@ -35,8 +35,18 @@ const Footer = () => {
           <ul className="space-y-3 text-sm" style={{ color: '#d1d5db' }}>
             <li><Link to="/about" className="hover:text-white">Tentang Kami</Link></li>
             <li><Link to="/profile/orders" className="hover:text-white">Status Pesanan</Link></li>
-            <li><Link to="/profile/address" className="hover:text-white">Informasi Pengiriman</Link></li>  
-            <li><Link to="/faq" className="hover:text-white">Hubungi Kami / FAQ</Link></li>
+            <li><Link to="/profile/address" className="hover:text-white">Informasi Pengiriman</Link></li>
+            <li><Link to="/faq" className="hover:text-white">FAQ</Link></li>
+            <li>
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('open-chat'))}
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                <FiMessageCircle size={14} />
+                Chat dengan Kami
+              </button>
+            </li>
           </ul>
         </div>
 

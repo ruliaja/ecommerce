@@ -139,11 +139,23 @@ const Chat = () => {
   }, [isOpen, logged, user?.id, fetchUnreadCount]);
 
   // Listen for external open-chat events
-  useEffect(() => {
-    const handleOpenChat = () => setIsOpen(true);
-    window.addEventListener('open-chat', handleOpenChat);
-    return () => window.removeEventListener('open-chat', handleOpenChat);
+  const openChat = useCallback(() => {
+    setIsOpen(true);
+    setIsAnimating(false);
   }, []);
+
+  useEffect(() => {
+    const handleOpenChat = () => openChat();
+    window.addEventListener('open-chat', handleOpenChat);
+    window.openChatWidget = openChat;
+
+    return () => {
+      window.removeEventListener('open-chat', handleOpenChat);
+      if (window.openChatWidget === openChat) {
+        delete window.openChatWidget;
+      }
+    };
+  }, [openChat]);
 
   // Auto-scroll on new messages
   useEffect(() => {

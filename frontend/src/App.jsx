@@ -6,6 +6,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { ModalProvider } from './context/ModalContext';
 import NotificationContainer from './components/NotificationContainer';
 import ModalContainer from './components/ModalContainer';
+import ScrollToTop from './components/ScrollToTop';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -42,6 +43,7 @@ function App() {
           <WishlistProvider>
             <ModalProvider>
               <Router>
+              <ScrollToTop />
               <NotificationContainer />
               <ModalContainer />
               <Routes>
