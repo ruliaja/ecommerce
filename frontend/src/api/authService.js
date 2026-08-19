@@ -71,6 +71,37 @@ export const logoutUser = () => {
   localStorage.removeItem('user');
 };
 
+// Forgot Password
+export const forgotPassword = async (email) => {
+  try {
+    const response = await axios.post(`${API_URL}?action=forgot_password`, {
+      email: email
+    });
+    return response.data;
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error.response?.data?.message || 'Terjadi kesalahan saat mengirim email reset password'
+    };
+  }
+};
+
+// Reset Password
+export const resetPassword = async (token, newPassword) => {
+  try {
+    const response = await axios.post(`${API_URL}?action=reset_password`, {
+      token: token,
+      new_password: newPassword
+    });
+    return response.data;
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error.response?.data?.message || 'Terjadi kesalahan saat reset password'
+    };
+  }
+};
+
 // Get current user
 export const getCurrentUser = () => {
   const user = localStorage.getItem('user');

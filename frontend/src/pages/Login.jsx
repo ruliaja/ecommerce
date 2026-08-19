@@ -158,6 +158,9 @@ const Login = () => {
               <input type="checkbox" className="mr-2" />
               Ingat saya
             </label>
+            <Link to="/forgot-password" className="text-purple-600 hover:text-purple-700 font-semibold">
+              Lupa password?
+            </Link>
           </div>
 
           {/* Submit Button */}

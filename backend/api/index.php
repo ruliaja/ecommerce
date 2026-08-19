@@ -44,6 +44,18 @@ switch ($action) {
         }
         break;
 
+    case 'forgot_password':
+        if ($method == 'POST') {
+            echo json_encode(forgotPassword($db, $input));
+        }
+        break;
+
+    case 'reset_password':
+        if ($method == 'POST') {
+            echo json_encode(resetPassword($db, $input));
+        }
+        break;
+
     case 'get_products':
         if ($method == 'GET') {
             try {
