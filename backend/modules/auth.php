@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../libs/EmailHelper.php';
+
 // REGISTER
 function register($db, $data) {
     if (!isset($data['name']) || !isset($data['email']) || !isset($data['password']) || !isset($data['username'])) {
@@ -286,49 +288,25 @@ function forgotPassword($db, $data) {
         }
         $update_stmt->close();
 
-        // Kirim email reset password
-        $reset_link = "https://outfitkita.my.id/reset-password?token=" . $token;
-        $subject = "Reset Password - OutFitKita";
-        $message = "
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
-                    .container { max-width: 500px; margin: 0 auto; background: #ffffff; border-radius: 8px; padding: 30px; }
-                    h2 { color: #7c3aed; }
-                    .button { display: inline-block; background: linear-gradient(to right, #7c3aed, #2563eb); color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; }
-                    .footer { margin-top: 20px; font-size: 12px; color: #888888; }
-                </style>
-            </head>
-            <body>
-                <div class='container'>
-                    <h2>Reset Password</h2>
-                    <p>Halo <strong>" . $user['name'] . "</strong>,</p>
-                    <p>Kami menerima permintaan untuk mereset password akun Anda. Klik tombol di bawah ini untuk membuat password baru:</p>
-                    <p style='text-align: center;'>
-                        <a href='" . $reset_link . "' class='button'>Reset Password</a>
-                    </p>
-                    <p>Link ini berlaku selama <strong>1 jam</strong>. Jika Anda tidak meminta reset password, abaikan email ini.</p>
-                    <div class='footer'>
-                        <p>© " . date('Y') . " OutFitKita. Semua hak dilindungi.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-        ";
+        // Kirim email reset password menggunakan Gmail SMTP
+        $emailHelper = new EmailHelper();
+        $emailResult = $emailHelper->sendPasswordResetEmail($user['email'], $user['name'], $token);
 
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
-        $headers .= "From: OutFitKita <no-reply@outfitkita.my.id>" . "\r\n";
-
-        $mail_sent = @mail($user['email'], $subject, $message, $headers);
-
-        // Jika mail tidak tersedia, tetap return success (untuk development)
-        return [
-            "status" => "success",
-            "message" => "Link reset password telah dikirim ke email Anda",
-            "debug_token" => $mail_sent ? null : $token // Hanya untuk development
-        ];
+        if ($emailResult['status'] === 'success') {
+            return [
+                "status" => "success",
+                "message" => "Link reset password telah dikirim ke email Anda"
+            ];
+        } else {
+            // Email gagal dikirim, tetap return success untuk keamanan
+            // tapi log error untuk debugging
+            error_log("Gmail email failed: " . $emailResult['message']);
+            return [
+                "status" => "success",
+                "message" => "Link reset password telah dikirim ke email Anda",
+                "debug_token" => $token // Hanya untuk development
+            ];
+        }
     } catch (Exception $e) {
         return ["status" => "error", "message" => "Exception: " . $e->getMessage()];
     }
