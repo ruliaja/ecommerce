@@ -56,6 +56,38 @@ switch ($action) {
         }
         break;
 
+    // ==================== JWT AUTHENTICATION ====================
+    case 'verify_token':
+        if ($method == 'POST' || $method == 'GET') {
+            echo json_encode(verifyToken($db, $input));
+        }
+        break;
+
+    case 'refresh_token':
+        if ($method == 'POST') {
+            echo json_encode(refreshToken($db, $input));
+        }
+        break;
+
+    case 'logout':
+        if ($method == 'POST') {
+            echo json_encode(logout($db, $input));
+        }
+        break;
+
+    // ==================== OAUTH AUTHENTICATION ====================
+    case 'google_auth_url':
+        if ($method == 'GET') {
+            echo json_encode(googleAuthUrl($db, $input));
+        }
+        break;
+
+    case 'google_auth_callback':
+        if ($method == 'POST') {
+            echo json_encode(googleAuthCallback($db, $input));
+        }
+        break;
+
     case 'get_products':
         if ($method == 'GET') {
             try {

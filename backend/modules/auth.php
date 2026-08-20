@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../libs/EmailHelper.php';
+require_once __DIR__ . '/../libs/JWTHelper.php';
 
 // REGISTER
 function register($db, $data) {
@@ -99,11 +100,19 @@ function login($db, $data) {
         
         if (password_verify($password, $user_pass['password'])) {
             $stmt->close();
+            
+            // Generate JWT token
+            $access_token = JWTHelper::generateToken($user['id'], $user['email'], $user['role'] ?? 'customer');
+            $refresh_token = JWTHelper::generateRefreshToken($user['id'], $user['email'], $user['role'] ?? 'customer');
+            
             return [
                 "status" => "success", 
                 "message" => "Login berhasil",
                 "user" => $user,
-                "token" => bin2hex(random_bytes(32))
+                "access_token" => $access_token,
+                "refresh_token" => $refresh_token,
+                "token_type" => "Bearer",
+                "expires_in" => 86400 // 24 hours
             ];
         }
         
@@ -221,11 +230,19 @@ function loginAdmin($db, $data) {
         if (password_verify($password, $admin_pass['password'])) {
             $stmt->close();
             $admin['role'] = 'admin'; // For frontend compatibility
+            
+            // Generate JWT token
+            $access_token = JWTHelper::generateToken($admin['id'], $admin['email'], 'admin');
+            $refresh_token = JWTHelper::generateRefreshToken($admin['id'], $admin['email'], 'admin');
+            
             return [
                 "status" => "success", 
                 "message" => "Login admin berhasil",
                 "user" => $admin,
-                "token" => bin2hex(random_bytes(32)),
+                "access_token" => $access_token,
+                "refresh_token" => $refresh_token,
+                "token_type" => "Bearer",
+                "expires_in" => 86400,
                 "type" => "admin"
             ];
         }
@@ -377,5 +394,218 @@ function resetPassword($db, $data) {
     } catch (Exception $e) {
         return ["status" => "error", "message" => "Exception: " . $e->getMessage()];
     }
+}
+
+// ==================== JWT AUTHENTICATION ====================
+
+// VERIFY TOKEN
+function verifyToken($db, $data) {
+    $result = JWTHelper::verifyRequest();
+    
+    if ($result['status'] === 'error') {
+        return $result;
+    }
+    
+    $userId = $result['data']->userId;
+    
+    // Get fresh user data from database
+    $query = "SELECT id, name, username, email, phone, profile_image, role FROM users WHERE id = ?";
+    $stmt = $db->prepare($query);
+    
+    if (!$stmt) {
+        return ["status" => "error", "message" => "Prepare failed: " . $db->error];
+    }
+    
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        $stmt->close();
+        return ["status" => "error", "message" => "User tidak ditemukan"];
+    }
+    
+    $user = $result->fetch_assoc();
+    $stmt->close();
+    
+    return [
+        "status" => "success",
+        "message" => "Token valid",
+        "user" => $user
+    ];
+}
+
+// REFRESH TOKEN
+function refreshToken($db, $data) {
+    if (!isset($data['refresh_token'])) {
+        return ["status" => "error", "message" => "Refresh token tidak ditemukan"];
+    }
+    
+    $result = JWTHelper::validateToken($data['refresh_token']);
+    
+    if ($result['status'] === 'error') {
+        return $result;
+    }
+    
+    $userId = $result['data']->userId;
+    $email = $result['data']->email;
+    $role = $result['data']->role ?? 'customer';
+    
+    // Generate new tokens
+    $access_token = JWTHelper::generateToken($userId, $email, $role);
+    $refresh_token = JWTHelper::generateRefreshToken($userId, $email, $role);
+    
+    return [
+        "status" => "success",
+        "message" => "Token berhasil diperbarui",
+        "access_token" => $access_token,
+        "refresh_token" => $refresh_token,
+        "token_type" => "Bearer",
+        "expires_in" => 86400
+    ];
+}
+
+// LOGOUT (client-side token invalidation)
+function logout($db, $data) {
+    // JWT is stateless, so logout is handled client-side by removing the token
+    // In production, you could implement a token blacklist here
+    return [
+        "status" => "success",
+        "message" => "Logout berhasil"
+    ];
+}
+
+// ==================== OAUTH AUTHENTICATION ====================
+
+// GOOGLE OAUTH - Get authorization URL
+function googleAuthUrl($db, $data) {
+    require_once __DIR__ . '/../libs/OAuthHelper.php';
+    return OAuthHelper::getGoogleAuthUrl();
+}
+
+// GOOGLE OAUTH - Handle callback
+function googleAuthCallback($db, $data) {
+    require_once __DIR__ . '/../libs/OAuthHelper.php';
+    
+    if (!isset($data['code'])) {
+        return ["status" => "error", "message" => "Kode OAuth tidak ditemukan"];
+    }
+    
+    $state = $data['state'] ?? null;
+    $result = OAuthHelper::handleGoogleCallback($data['code'], $state);
+    
+    if ($result['status'] === 'error') {
+        return $result;
+    }
+    
+    $googleUser = $result['user'];
+    
+    // Check if user already exists by email
+    $email = $db->real_escape_string($googleUser['email']);
+    $query = "SELECT id, name, username, email, phone, profile_image, role, google_id FROM users WHERE email = ?";
+    $stmt = $db->prepare($query);
+    
+    if (!$stmt) {
+        return ["status" => "error", "message" => "Prepare failed: " . $db->error];
+    }
+    
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        // User exists - update google_id if not set
+        $user = $result->fetch_assoc();
+        $stmt->close();
+        
+        if (empty($user['google_id'])) {
+            $update_query = "UPDATE users SET google_id = ? WHERE id = ?";
+            $update_stmt = $db->prepare($update_query);
+            $update_stmt->bind_param("si", $googleUser['google_id'], $user['id']);
+            $update_stmt->execute();
+            $update_stmt->close();
+        }
+        
+        // Generate JWT tokens
+        $access_token = JWTHelper::generateToken($user['id'], $user['email'], $user['role'] ?? 'customer');
+        $refresh_token = JWTHelper::generateRefreshToken($user['id'], $user['email'], $user['role'] ?? 'customer');
+        
+        return [
+            "status" => "success",
+            "message" => "Login Google berhasil",
+            "user" => $user,
+            "access_token" => $access_token,
+            "refresh_token" => $refresh_token,
+            "token_type" => "Bearer",
+            "expires_in" => 86400,
+            "oauth_provider" => "google"
+        ];
+    }
+    
+    $stmt->close();
+    
+    // User doesn't exist - create new account
+    $name = $db->real_escape_string($googleUser['name']);
+    $username = $db->real_escape_string(strtolower(str_replace(' ', '_', $googleUser['name'])) . '_' . substr($googleUser['google_id'], 0, 6));
+    $google_id = $db->real_escape_string($googleUser['google_id']);
+    $profile_image = $googleUser['profile_image'] ? $db->real_escape_string($googleUser['profile_image']) : null;
+    
+    // Generate random password (user won't use it, but keep field non-null)
+    $random_password = password_hash(bin2hex(random_bytes(16)), PASSWORD_BCRYPT);
+    
+    $insert_query = "INSERT INTO users (name, email, username, password, profile_image, google_id, role) VALUES (?, ?, ?, ?, ?, ?, 'customer')";
+    $insert_stmt = $db->prepare($insert_query);
+    
+    if (!$insert_stmt) {
+        return ["status" => "error", "message" => "Prepare failed: " . $db->error];
+    }
+    
+    $insert_stmt->bind_param("ssssss", $name, $email, $username, $random_password, $profile_image, $google_id);
+    
+    if (!$insert_stmt->execute()) {
+        $error_msg = $insert_stmt->error;
+        $insert_stmt->close();
+        
+        // Handle duplicate username
+        if (strpos($error_msg, 'username') !== false) {
+            $username = $username . '_' . bin2hex(random_bytes(2));
+            $insert_stmt = $db->prepare($insert_query);
+            $insert_stmt->bind_param("ssssss", $name, $email, $username, $random_password, $profile_image, $google_id);
+            if (!$insert_stmt->execute()) {
+                $error_msg = $insert_stmt->error;
+                $insert_stmt->close();
+                return ["status" => "error", "message" => "Error: " . $error_msg];
+            }
+        } else {
+            return ["status" => "error", "message" => "Error: " . $error_msg];
+        }
+    }
+    
+    $new_user_id = $insert_stmt->insert_id;
+    $insert_stmt->close();
+    
+    // Get the new user
+    $query = "SELECT id, name, username, email, phone, profile_image, role FROM users WHERE id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->bind_param("i", $new_user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $new_user = $result->fetch_assoc();
+    $stmt->close();
+    
+    // Generate JWT tokens
+    $access_token = JWTHelper::generateToken($new_user['id'], $new_user['email'], $new_user['role'] ?? 'customer');
+    $refresh_token = JWTHelper::generateRefreshToken($new_user['id'], $new_user['email'], $new_user['role'] ?? 'customer');
+    
+    return [
+        "status" => "success",
+        "message" => "Akun berhasil dibuat dengan Google",
+        "user" => $new_user,
+        "access_token" => $access_token,
+        "refresh_token" => $refresh_token,
+        "token_type" => "Bearer",
+        "expires_in" => 86400,
+        "oauth_provider" => "google"
+    ];
 }
 ?>

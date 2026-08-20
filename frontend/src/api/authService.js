@@ -20,7 +20,7 @@ export const registerUser = async (userData) => {
   }
 };
 
-// Login User
+// Login User with JWT
 export const loginUser = async (credentials) => {
   try {
     const response = await axios.post(`${API_URL}?action=login`, {
@@ -29,9 +29,12 @@ export const loginUser = async (credentials) => {
     });
 
     if (response.data.status === 'success') {
-      // Simpan token dan user data ke localStorage
-      localStorage.setItem('token', response.data.token);
+      // Simpan access token dan refresh token
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('token', response.data.access_token); // For backward compatibility
       localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('token_type', response.data.token_type || 'Bearer');
     }
 
     return response.data;
@@ -43,7 +46,7 @@ export const loginUser = async (credentials) => {
   }
 };
 
-// Login Admin
+// Login Admin with JWT
 export const loginAdmin = async (credentials) => {
   try {
     const response = await axios.post(`${API_URL}?action=admin_login`, {
@@ -52,7 +55,9 @@ export const loginAdmin = async (credentials) => {
     });
 
     if (response.data.status === 'success') {
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('token', response.data.access_token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
     }
 
@@ -67,8 +72,47 @@ export const loginAdmin = async (credentials) => {
 
 // Logout User
 export const logoutUser = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('token_type');
+};
+
+// Verify Token
+export const verifyToken = async () => {
+  try {
+    const response = await axios.post(`${API_URL}?action=verify_token`);
+    return response.data;
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error.response?.data?.message || 'Token tidak valid'
+    };
+  }
+};
+
+// Refresh Token
+export const refreshAccessToken = async () => {
+  try {
+    const refreshToken = localStorage.getItem('refresh_token');
+    const response = await axios.post(`${API_URL}?action=refresh_token`, {
+      refresh_token: refreshToken
+    });
+
+    if (response.data.status === 'success') {
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('token', response.data.access_token);
+    }
+
+    return response.data;
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error.response?.data?.message || 'Gagal merefresh token'
+    };
+  }
 };
 
 // Forgot Password
@@ -110,5 +154,56 @@ export const getCurrentUser = () => {
 
 // Check if user is logged in
 export const isLoggedIn = () => {
-  return !!localStorage.getItem('token');
+  return !!(localStorage.getItem('access_token') || localStorage.getItem('token'));
+};
+
+// ==================== OAUTH AUTHENTICATION ====================
+
+// Get Google OAuth URL
+export const getGoogleAuthUrl = async () => {
+  try {
+    const response = await axios.get(`${API_URL}?action=google_auth_url`);
+    return response.data;
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error.response?.data?.message || 'Gagal mendapatkan URL autentikasi Google'
+    };
+  }
+};
+
+// Handle Google OAuth Callback
+export const handleGoogleAuthCallback = async (code, state) => {
+  try {
+    const response = await axios.post(`${API_URL}?action=google_auth_callback`, {
+      code: code,
+      state: state
+    });
+
+    if (response.data.status === 'success') {
+      // Simpan tokens dan user data
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('token', response.data.access_token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('oauth_provider', response.data.oauth_provider || 'google');
+    }
+
+    return response.data;
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error.response?.data?.message || 'Terjadi kesalahan saat login dengan Google'
+    };
+  }
+};
+
+// Redirect to Google OAuth login
+export const redirectToGoogleLogin = async () => {
+  const result = await getGoogleAuthUrl();
+  if (result.status === 'success') {
+    window.location.href = result.authUrl;
+  } else {
+    console.error('Failed to get Google Auth URL:', result.message);
+  }
 };

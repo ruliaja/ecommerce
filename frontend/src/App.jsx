@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import GoogleCallback from './pages/GoogleCallback';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
@@ -54,6 +55,8 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                {/* Google OAuth Callback */}
+                <Route path="/auth/google/callback" element={<GoogleCallback />} />
                 {/* Public Routes */}
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/about" element={<About />} />

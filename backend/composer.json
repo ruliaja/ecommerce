@@ -1,5 +1,8 @@
 {
     "require": {
-        "phpmailer/phpmailer": "^6.9"
+        "phpmailer/phpmailer": "^6.9",
+        "firebase/php-jwt": "^7.0",
+        "league/oauth2-client": "^2.0",
+        "league/oauth2-google": "^4.0"
     }
 }

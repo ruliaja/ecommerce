@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
+import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -178,6 +179,11 @@ const Login = () => {
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="px-3 text-gray-500 text-sm">atau</span>
           <div className="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        {/* Google OAuth Login */}
+        <div className="mb-6">
+          <GoogleLoginButton text="Masuk dengan Google" />
         </div>
 
         {/* Register Link */}
